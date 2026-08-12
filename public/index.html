@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Web Proxy</title>
+    <title>Web Proxy</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -36,7 +36,7 @@
             background: #030712;
             color: #fff;
             font-size: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.0rem;
             box-sizing: border-box;
             outline: none;
         }
@@ -59,25 +59,26 @@
 <body>
     <div class="card">
         <h1>Web Proxy</h1>
-        <p>Enter any URL to load it through your proxy.</p>
-        <div style="display: flex; flex-direction: column;">
-            <input type="text" id="urlInput" placeholder="https://example.com" autocomplete="off">
-            <button onclick="launchProxy()">Launch Proxy</button>
-        </div>
+        <p>Type a URL or search term, just like CroxyProxy.</p>
+        <input type="text" id="userInput" placeholder="Enter URL or search query..." autocomplete="off">
+        <button onclick="handleProxy()">Browse / Search</button>
     </div>
 
     <script>
-        function launchProxy() {
-            let target = document.getElementById('urlInput').value.trim();
-            if (!target) {
-                alert('Please enter a website URL!');
-                return;
+        function handleProxy() {
+            let input = document.getElementById('userInput').value.trim();
+            if (!input) return;
+
+            let targetUrl = '';
+            // If it has a dot and no spaces, or starts with http, treat it as a website URL
+            if (input.startsWith('http://') || input.startsWith('https://') || (input.includes('.') && !input.includes(' '))) {
+                targetUrl = input.startsWith('http') ? input : 'https://' + input;
+            } else {
+                // Otherwise, treat it as a search query using DuckDuckGo's proxy-friendly HTML version
+                targetUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(input);
             }
-            if (!target.startsWith('http://') && !target.startsWith('https://')) {
-                target = 'https://' + target;
-            }
-            // Explicitly force JavaScript navigation to the proxy route
-            window.location.href = '/proxy?url=' + encodeURIComponent(target);
+
+            window.location.href = '/proxy?url=' + encodeURIComponent(targetUrl);
         }
     </script>
 </body>
