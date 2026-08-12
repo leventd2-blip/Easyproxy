@@ -3,83 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Proxy</title>
+    <title>Nexus Cloud Proxy</title>
     <style>
+        :root {
+            --bg: #090d16;
+            --card: #111827;
+            --border: #1f2937;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --text: #f9fafb;
+            --muted: #9ca3af;
+        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #0b0f19;
-            color: #f3f4f6;
+            background: var(--bg);
+            color: var(--text);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 1rem;
         }
-        .card {
-            background: #111827;
+        .wrapper {
+            width: 100%;
+            max-width: 540px;
+            background: var(--card);
+            border: 1px solid var(--border);
             padding: 2.5rem;
-            border-radius: 12px;
-            border: 1px solid #1f2937;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            text-align: center;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            box-sizing: border-box;
         }
-        h1 { color: #38bdf8; margin-top: 0; font-size: 1.8rem; }
-        p { color: #9ca3af; font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.5rem;
+        }
+        .indicator {
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #22c55e;
+        }
+        h1 {
+            font-size: 1.6rem;
+            margin: 0;
+            letter-spacing: -0.025em;
+        }
+        p {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            line-height: 1.4;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
         input {
             width: 100%;
-            padding: 0.85rem;
-            border-radius: 8px;
-            border: 1px solid #374151;
-            background: #030712;
-            color: #fff;
+            padding: 0.95rem 1rem;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
             font-size: 1rem;
-            margin-bottom: 1.0rem;
+            border-radius: 10px;
             box-sizing: border-box;
             outline: none;
+            transition: border-color 0.2s;
         }
-        input:focus { border-color: #38bdf8; }
+        input:focus {
+            border-color: var(--accent);
+        }
         button {
-            background: #38bdf8;
+            background: var(--accent);
             color: #030712;
             border: none;
-            padding: 0.85rem;
+            padding: 0.95rem;
             font-size: 1rem;
-            font-weight: bold;
-            border-radius: 8px;
+            font-weight: 700;
+            border-radius: 10px;
             cursor: pointer;
-            width: 100%;
             transition: background 0.2s;
         }
-        button:hover { background: #0ea5e9; }
+        button:hover {
+            background: var(--accent-hover);
+        }
+        .shortcuts {
+            margin-top: 2rem;
+            border-top: 1px solid var(--border);
+            padding-top: 1.5rem;
+        }
+        .shortcuts span {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        .chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .chip {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.45rem 0.85rem;
+            font-size: 0.85rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .chip:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Web Proxy</h1>
-        <p>Type a URL or search term, just like CroxyProxy.</p>
-        <input type="text" id="userInput" placeholder="Enter URL or search query..." autocomplete="off">
-        <button onclick="handleProxy()">Browse / Search</button>
+    <div class="wrapper">
+        <div class="brand">
+            <div class="indicator"></div>
+            <h1>Nexus Proxy</h1>
+        </div>
+        <p>Enter any URL (with paths like discord.com/app) or search query to browse privately.</p>
+        
+        <div class="input-group">
+            <input type="text" id="targetInput" placeholder="https://discord.com/app or search..." autocomplete="off">
+            <button onclick="launchSession()">Initialize Secure Session</button>
+        </div>
+
+        <div class="shortcuts">
+            <span>Quick Launch Nodes</span>
+            <div class="chips">
+                <a class="chip" href="/proxy?url=https://discord.com/app" target="_blank">Discord App</a>
+                <a class="chip" href="/proxy?url=https://www.wikipedia.org" target="_blank">Wikipedia</a>
+                <a class="chip" href="/proxy?url=https://html.duckduckgo.com" target="_blank">DuckDuckGo</a>
+                <a class="chip" href="/proxy?url=https://news.ycombinator.com" target="_blank">Hacker News</a>
+            </div>
+        </div>
     </div>
 
     <script>
-        function handleProxy() {
-            let input = document.getElementById('userInput').value.trim();
-            if (!input) return;
+        function launchSession() {
+            let val = document.getElementById('targetInput').value.trim();
+            if (!val) return;
 
-            let targetUrl = '';
-            // If it has a dot and no spaces, or starts with http, treat it as a website URL
-            if (input.startsWith('http://') || input.startsWith('https://') || (input.includes('.') && !input.includes(' '))) {
-                targetUrl = input.startsWith('http') ? input : 'https://' + input;
+            let finalUrl = '';
+            // Determine if input is a direct URL/sub-path or a general search term
+            if (val.startsWith('http://') || val.startsWith('https://') || (val.includes('.') && !val.includes(' '))) {
+                finalUrl = val.startsWith('http') ? val : 'https://' + val;
             } else {
-                // Otherwise, treat it as a search query using DuckDuckGo's proxy-friendly HTML version
-                targetUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(input);
+                finalUrl = 'https://html.duckduckgo.com/html/?q=' + encodeURIComponent(val);
             }
 
-            window.location.href = '/proxy?url=' + encodeURIComponent(targetUrl);
+            window.location.href = '/proxy?url=' + encodeURIComponent(finalUrl);
         }
+
+        // Allow pressing Enter key to launch
+        document.getElementById('targetInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                launchSession();
+            }
+        });
     </script>
 </body>
 </html>
