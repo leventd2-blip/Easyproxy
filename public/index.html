@@ -3,164 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus Cloud Proxy</title>
+    <title>Nexus // Secure Network Gateway</title>
     <style>
         :root {
-            --bg: #090d16;
-            --card: #111827;
-            --border: #1f2937;
-            --accent: #38bdf8;
-            --accent-hover: #0ea5e9;
-            --text: #f9fafb;
-            --muted: #9ca3af;
+            --bg: #000000;
+            --surface: #0a0a0a;
+            --border: #222222;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+            --accent: #ffffff;
         }
+        * { box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace, sans-serif;
             background: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Top Telemetry / Status Bar */
+        .telemetry-bar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 5%;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .telemetry-bar span span {
+            color: #22c55e;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            border-bottom: 1px solid var(--border);
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            font-size: 1.1rem;
+        }
+        .logo-icon {
+            width: 24px;
+            height: 24px;
+            background: #ffffff;
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        .nav-links span {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .nav-links span:hover {
+            color: var(--text-main);
+        }
+        .nav-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .nav-btn:hover {
+            opacity: 0.85;
+        }
+
+        /* Hero Section */
+        .hero {
+            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 1rem;
+            text-align: center;
+            padding: 0 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
-        .wrapper {
-            width: 100%;
-            max-width: 540px;
-            background: var(--card);
+        .tag {
+            font-family: monospace;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
             border: 1px solid var(--border);
-            padding: 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            box-sizing: border-box;
-        }
-        .brand {
-            display: flex;
+            padding: 6px 14px;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 0.5rem;
+            gap: 8px;
         }
-        .indicator {
-            width: 10px;
-            height: 10px;
+        .tag-dot {
+            width: 6px;
+            height: 6px;
             background: #22c55e;
             border-radius: 50%;
-            box-shadow: 0 0 10px #22c55e;
+            box-shadow: 0 0 8px #22c55e;
         }
         h1 {
-            font-size: 1.6rem;
-            margin: 0;
-            letter-spacing: -0.025em;
+            font-size: clamp(2.5rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin: 0 0 1.5rem 0;
+            text-transform: uppercase;
         }
-        p {
-            color: var(--muted);
-            font-size: 0.95rem;
-            margin-bottom: 2rem;
-            line-height: 1.4;
+        h1 span {
+            color: var(--text-muted);
+            display: block;
         }
-        .input-group {
+        .hero-desc {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Action Form */
+        .action-box {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            gap: 10px;
+            width: 100%;
+            max-width: 500px;
+            background: var(--surface);
+            padding: 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
         }
         input {
-            width: 100%;
-            padding: 0.95rem 1rem;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            font-size: 1rem;
-            border-radius: 10px;
-            box-sizing: border-box;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input:focus {
-            border-color: var(--accent);
-        }
-        button {
-            background: var(--accent);
-            color: #030712;
+            flex: 1;
+            background: transparent;
             border: none;
-            padding: 0.95rem;
-            font-size: 1rem;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 0.95rem;
+            outline: none;
         }
-        button:hover {
-            background: var(--accent-hover);
+        input::placeholder {
+            color: #555;
         }
-        .shortcuts {
-            margin-top: 2rem;
-            border-top: 1px solid var(--border);
-            padding-top: 1.5rem;
-        }
-        .shortcuts span {
-            display: block;
-            font-size: 0.75rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
+        .launch-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 0 20px;
             font-weight: 600;
-        }
-        .chips {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .chip {
-            background: var(--bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.45rem 0.85rem;
-            font-size: 0.85rem;
-            border-radius: 8px;
+            font-size: 0.9rem;
+            border-radius: 6px;
             cursor: pointer;
-            text-decoration: none;
-            transition: all 0.2s;
+            white-space: nowrap;
         }
-        .chip:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+        .launch-btn:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
-    <div class="wrapper">
-        <div class="brand">
-            <div class="indicator"></div>
-            <h1>Nexus Proxy</h1>
-        </div>
-        <p>Enter any URL (with paths like discord.com/app) or search query to browse privately.</p>
-        
-        <div class="input-group">
-            <input type="text" id="targetInput" placeholder="https://discord.com/app or search..." autocomplete="off">
-            <button onclick="launchSession()">Initialize Secure Session</button>
-        </div>
 
-        <div class="shortcuts">
-            <span>Quick Launch Nodes</span>
-            <div class="chips">
-                <a class="chip" href="/proxy?url=https://discord.com/app" target="_blank">Discord App</a>
-                <a class="chip" href="/proxy?url=https://www.wikipedia.org" target="_blank">Wikipedia</a>
-                <a class="chip" href="/proxy?url=https://html.duckduckgo.com" target="_blank">DuckDuckGo</a>
-                <a class="chip" href="/proxy?url=https://news.ycombinator.com" target="_blank">Hacker News</a>
-            </div>
+    <!-- Telemetry Strip -->
+    <div class="telemetry-bar">
+        <div>Network Node: <span>Active (Edge Gateway)</span></div>
+        <div>Routing Protocol: <span>TLS 1.3 Secure</span></div>
+        <div>Sandbox Engine: <span>Active Memory Routing</span></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="logo-area">
+            <div class="logo-icon">N</div>
+            Nexus
+        </div>
+        <div class="nav-links">
+            <span>Overview</span>
+            <span>Architecture</span>
+            <span>Security</span>
+        </div>
+        <button class="nav-btn" onclick="focusInput()">Launch Session →</button>
+    </nav>
+
+    <!-- Hero Content -->
+    <div class="hero">
+        <div class="tag">
+            <div class="tag-dot"></div>
+            Zero-Trust Encrypted Tunnel
+        </div>
+        
+        <h1>
+            Browse Boundaries.
+            <span>Without Leaving a Trace.</span>
+        </h1>
+        
+        <p class="hero-desc">
+            Bypass content filters instantly with a high-speed encrypted edge proxy. Zero local storage, absolute tracking protection, and real-time routing.
+        </p>
+
+        <div class="action-box">
+            <input type="text" id="targetInput" placeholder="Enter URL or search query..." autocomplete="off">
+            <button class="launch-btn" onclick="launchSession()">Initialize →</button>
         </div>
     </div>
 
     <script>
+        function focusInput() {
+            document.getElementById('targetInput').focus();
+        }
+
         function launchSession() {
             let val = document.getElementById('targetInput').value.trim();
             if (!val) return;
 
             let finalUrl = '';
-            // Determine if input is a direct URL/sub-path or a general search term
             if (val.startsWith('http://') || val.startsWith('https://') || (val.includes('.') && !val.includes(' '))) {
                 finalUrl = val.startsWith('http') ? val : 'https://' + val;
             } else {
@@ -170,7 +254,6 @@
             window.location.href = '/proxy?url=' + encodeURIComponent(finalUrl);
         }
 
-        // Allow pressing Enter key to launch
         document.getElementById('targetInput').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 launchSession();
